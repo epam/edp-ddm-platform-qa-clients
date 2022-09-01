@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>platform.qa</groupId>
+    <artifactId>platform-qa-clients</artifactId>
+    <packaging>pom</packaging>
+    <version>1.6.0.52</version>
+
+    <modules>
+        <module>protocols-qa-client</module>
+        <module>ceph-qa-client</module>
+        <module>openshift-qa-client</module>
+        <module>keycloak-qa-client</module>
+        <module>git-qa-client</module>
+        <module>jenkins-qa-client</module>
+        <module>database-qa-client</module>
+        <module>email-qa-client</module>
+        <module>vault-qa-client</module>
+        <module>redis-qa-client</module>
+    </modules>
+
+    <properties>
+        <global-qa-entities.version>1.6.0.8</global-qa-entities.version>
+        <lombok.version>1.18.22</lombok.version>
+        <aspectj.version>1.9.6</aspectj.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <log4j-core.version>2.17.2</log4j-core.version>
+        <awaitility.version>4.1.1</awaitility.version>
+        <javafaker.version>1.0.2</javafaker.version>
+        <guava.version>31.0.1-jre</guava.version>
+        <jodd-util.version>6.0.1</jodd-util.version>
+        <jackson.version>2.13.1</jackson.version>
+        <mockito.version>1.10.19</mockito.version>
+        <gson.version>2.9.1</gson.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>platform.qa</groupId>
+            <artifactId>global-qa-entities</artifactId>
+            <version>${global-qa-entities.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j-core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jodd</groupId>
+            <artifactId>jodd-util</artifactId>
+            <version>${jodd-util.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${javafaker.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-lang3</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

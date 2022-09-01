@@ -1,0 +1,10 @@
+#just for iOs
+.DS_Store
+
+*~
+.idea/
+build/
+target/
+*.iml
+.allure
+allure-results/

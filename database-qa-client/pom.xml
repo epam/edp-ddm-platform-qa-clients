@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>platform-qa-clients</artifactId>
+        <groupId>platform.qa</groupId>
+        <version>1.6.0.52</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>database-qa-client</artifactId>
+
+    <properties>
+        <jcabi-jdbc.version>0.17.6</jcabi-jdbc.version>
+        <jcabi-aspects.version>0.23.2</jcabi-aspects.version>
+        <postgresql.version>42.3.1</postgresql.version>
+        <assertj-core.version>3.22.0</assertj-core.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>checker-qual</artifactId>
+                    <groupId>org.checkerframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-jdbc</artifactId>
+            <version>${jcabi-jdbc.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>aspectjrt</artifactId>
+                    <groupId>org.aspectj</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-aspects</artifactId>
+            <version>${jcabi-aspects.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>aspectjrt</artifactId>
+                    <groupId>org.aspectj</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
