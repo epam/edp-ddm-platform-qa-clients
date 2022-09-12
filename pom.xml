@@ -7,7 +7,7 @@
     <groupId>platform.qa</groupId>
     <artifactId>platform-qa-clients</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0.52</version>
+    <version>1.6.0.54</version>
 
     <modules>
         <module>protocols-qa-client</module>
@@ -60,16 +60,12 @@
             <scope>provided</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
             <scope>provided</scope>
         </dependency>
-
-
-
 
         <dependency>
             <groupId>com.google.guava</groupId>

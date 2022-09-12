@@ -22,6 +22,7 @@ import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodList;
+import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.http.HttpClient;
 import io.fabric8.kubernetes.client.http.HttpRequest;
@@ -73,12 +74,11 @@ public class OkdClient {
         if (StringUtils.isEmpty(namespace))
             throw new RuntimeException("Openshift namespace is NOT set!");
 
-        var config = new ConfigBuilder()
+        var configBuilder = new ConfigBuilder()
                 .withUsername(service.getUser().getLogin())
-                .withPassword(service.getUser().getPassword())
                 .withTrustCerts(true)
-                .withMasterUrl(service.getUrl())
-                .build();
+                .withMasterUrl(service.getUrl());
+        var config = getOkdClientWithPassword(service, configBuilder);
 
         osClient = new DefaultOpenShiftClient(config)
                 .inNamespace(namespace);
@@ -89,12 +89,11 @@ public class OkdClient {
     }
 
     public OkdClient(Service service) {
-        var config = new ConfigBuilder()
+        var configBuilder = new ConfigBuilder()
                 .withUsername(service.getUser().getLogin())
-                .withPassword(service.getUser().getPassword())
                 .withTrustCerts(true)
-                .withMasterUrl(service.getUrl())
-                .build();
+                .withMasterUrl(service.getUrl());
+        var config = getOkdClientWithPassword(service, configBuilder);
 
         osClient = new DefaultOpenShiftClient(config).inAnyNamespace();
     }
@@ -207,7 +206,7 @@ public class OkdClient {
         return new ObjectMapper().readValue(httpResponse, PodList.class).getItems();
     }
 
-    public Namespace getNamespaceByName(String name){
+    public Namespace getNamespaceByName(String name) {
         return osClient.namespaces().withName(name).get();
     }
 
@@ -253,4 +252,11 @@ public class OkdClient {
         return httpClient.send(httpRequest, String.class).body();
     }
 
+    private Config getOkdClientWithPassword(Service service, ConfigBuilder configBuilder) {
+        if (service.getUser().getLogin().contains("service")) {
+            return configBuilder.withOauthToken(service.getUser().getPassword()).build();
+        } else {
+            return configBuilder.withPassword(service.getUser().getPassword()).build();
+        }
+    }
 }
