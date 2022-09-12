@@ -7,7 +7,7 @@
     <groupId>platform.qa</groupId>
     <artifactId>platform-qa-clients</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0.54</version>
+    <version>1.6.0.55</version>
 
     <modules>
         <module>protocols-qa-client</module>
@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <global-qa-entities.version>1.6.0.8</global-qa-entities.version>
+        <global-qa-entities.version>1.6.0.9</global-qa-entities.version>
         <lombok.version>1.18.22</lombok.version>
         <aspectj.version>1.9.6</aspectj.version>
         <commons-io.version>2.11.0</commons-io.version>

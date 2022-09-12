@@ -1,16 +1,17 @@
 package platform.qa.redis;
 
+import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisSentinelPool;
+
+import java.util.Set;
 
 public class JedisClient {
     private final Jedis jedis;
 
-    public JedisClient(JedisService service) {
-        JedisSentinelPool sentinelPool = new JedisSentinelPool(service.getMasterName(), service.getSentinels());
+    public JedisClient(Redis redis) {
+        JedisSentinelPool sentinelPool = new JedisSentinelPool(redis.getMasterName(), Set.of(redis.getUrl()), redis.getPassword());
         jedis = sentinelPool.getResource();
-
-        jedis.auth(service.getPassword());
     }
 
     public void set(String key, String value) {
@@ -19,6 +20,18 @@ public class JedisClient {
 
     public String get(String key) {
         return jedis.get(key);
+    }
+
+    public String hget(String key, String field) {
+        return jedis.hget(key, field);
+    }
+
+    public Set<String> getAllKeys(){
+        return jedis.keys("*");
+    }
+
+    public Set<String> getKeys(String pattern){
+        return jedis.keys(pattern);
     }
 
     public void append(String key, String value) {

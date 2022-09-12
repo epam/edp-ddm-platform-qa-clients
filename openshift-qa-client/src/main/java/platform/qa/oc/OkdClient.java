@@ -162,7 +162,7 @@ public class OkdClient {
 
     public User getCredentials(String secretName) {
         var secret = osClient.secrets().withName(secretName).get().getData();
-        var userKey = secret.keySet().stream().filter(a -> a.contains("user")).findFirst().get();
+        var userKey = secret.keySet().stream().filter(a -> a.contains("user")).findFirst().orElse(null);
         var user = Base64.decodeToString(secret.get(userKey));
         var pwd = Base64.decodeToString(secret.get("password"));
         return new User(user, pwd);
