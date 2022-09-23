@@ -2,7 +2,6 @@ package platform.qa.redis;
 
 import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisSentinelPool;
 
 import java.util.Set;
 
@@ -10,8 +9,8 @@ public class JedisClient {
     private final Jedis jedis;
 
     public JedisClient(Redis redis) {
-        JedisSentinelPool sentinelPool = new JedisSentinelPool(redis.getMasterName(), Set.of(redis.getUrl()), redis.getPassword());
-        jedis = sentinelPool.getResource();
+        jedis = new Jedis(redis.getUrl());
+        jedis.auth(redis.getPassword());
     }
 
     public void set(String key, String value) {
