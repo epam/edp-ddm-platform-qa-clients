@@ -25,11 +25,15 @@ public class JedisClient {
         return jedis.hget(key, field);
     }
 
-    public Set<String> getAllKeys(){
+    public long hset(String key, String field, String value) {
+        return jedis.hset(key, field, value);
+    }
+
+    public Set<String> getAllKeys() {
         return jedis.keys("*");
     }
 
-    public Set<String> getKeys(String pattern){
+    public Set<String> getKeys(String pattern) {
         return jedis.keys(pattern);
     }
 
@@ -50,7 +54,7 @@ public class JedisClient {
     }
 
     public void setIfNotPresent(String key, String value) {
-        if (!isKeyPresent(key)){
+        if (!isKeyPresent(key)) {
             set(key, value);
         }
     }
