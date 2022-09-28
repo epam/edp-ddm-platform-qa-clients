@@ -3,13 +3,14 @@ package platform.qa.redis;
 import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
 
+import java.net.URI;
 import java.util.Set;
 
 public class JedisClient {
     private final Jedis jedis;
 
     public JedisClient(Redis redis) {
-        jedis = new Jedis(redis.getUrl());
+        jedis = new Jedis(URI.create(redis.getUrl()), 10000);
         jedis.auth(redis.getPassword());
     }
 
