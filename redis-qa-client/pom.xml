@@ -6,7 +6,7 @@
     <parent>
         <artifactId>platform-qa-clients</artifactId>
         <groupId>platform.qa</groupId>
-        <version>1.6.0.60</version>
+        <version>1.6.0.61</version>
     </parent>
     <artifactId>redis-qa-client</artifactId>
 
@@ -20,6 +20,12 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
