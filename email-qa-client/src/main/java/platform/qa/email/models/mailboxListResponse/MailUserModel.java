@@ -22,7 +22,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
@@ -30,11 +32,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @ToString
 @NoArgsConstructor
 @Accessors(chain = true)
-public class MailUserModel{
+public class MailUserModel implements Comparable<MailUserModel>{
 
 	@JsonProperty("posix-millis")
 	private long posixMillis;
-	private String date;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+	private Date date;
 	private String mailbox;
 	private int size;
 	private String subject;
@@ -42,4 +45,9 @@ public class MailUserModel{
 	private String id;
 	private List<String> to;
 	private boolean seen;
+
+	@Override
+	public int compareTo(MailUserModel otherUserMail) {
+		return getDate().compareTo(otherUserMail.getDate());
+	}
 }
