@@ -66,4 +66,8 @@ public class JedisClient {
         }
     }
 
+    public void close() {
+        jedis.close();
+    }
+
 }
