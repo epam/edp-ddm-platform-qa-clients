@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @ToString
 @NoArgsConstructor
 @Accessors(chain = true)
-public class UserMailBox implements Comparable<UserMailBox>{
+public class UserMail implements Comparable<UserMail>{
 
 	@JsonProperty("posix-millis")
 	private long posixMillis;
@@ -47,7 +47,7 @@ public class UserMailBox implements Comparable<UserMailBox>{
 	private boolean seen;
 
 	@Override
-	public int compareTo(UserMailBox otherUserMail) {
+	public int compareTo(UserMail otherUserMail) {
 		return getDate().compareTo(otherUserMail.getDate());
 	}
 }
