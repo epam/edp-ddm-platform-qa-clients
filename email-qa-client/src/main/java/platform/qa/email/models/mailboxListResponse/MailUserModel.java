@@ -36,7 +36,7 @@ public class MailUserModel implements Comparable<MailUserModel>{
 
 	@JsonProperty("posix-millis")
 	private long posixMillis;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private Date date;
 	private String mailbox;
 	private int size;
