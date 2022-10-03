@@ -16,55 +16,61 @@
 
 package platform.qa.email.service;
 
-import io.restassured.RestAssured;
+import static io.restassured.RestAssured.given;
+
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.log4j.Log4j2;
 
 /**
- *  Service to get mails, read or delete
+ * Service to get mails, read or delete
  */
 @Log4j2
 public class EmailService {
 
     public final static String E_MAIL_API_URL = System.getProperty("email.server");
     public final String E_MAIL_API_ROUTE = "api/v1/mailbox/";
+    private final RequestSpecification requestSpec;
 
-    private RequestSpecification baseSetupHeadersMailService() {
-        return RestAssured.given()
-                .contentType(ContentType.JSON);
+    public EmailService() {
+        this.requestSpec = new RequestSpecBuilder().setContentType(ContentType.JSON).build();
     }
 
-    public ValidatableResponse getMailboxListByUser(String userName) {
+    public ValidatableResponse getAllUserMails(String userName) {
         log.info("GET Mails By User Name");
-        return baseSetupHeadersMailService()
-                        .when()
-                        .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
-                        .then();
+        return given()
+                .spec(requestSpec)
+                .when()
+                .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
+                .then();
     }
 
-    public ValidatableResponse getMailInfoByUserNameAndMailId(String userName, String userId) {
+    public ValidatableResponse getUserMailById(String userName, String mailId) {
         log.info("GET Mail info By User Name and User Id");
-        return baseSetupHeadersMailService()
-                        .when()
-                        .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + userId)
-                        .then();
+        return given()
+                .spec(requestSpec)
+                .when()
+                .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + mailId)
+                .then();
     }
 
-    public ValidatableResponse deleteMailByUserName(String userName) {
+    public ValidatableResponse deleteAllUserMails(String userName) {
         log.info("DELETE Mail info By User Name");
-        return baseSetupHeadersMailService()
-                        .when()
-                        .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
-                        .then();
+        return given()
+                .spec(requestSpec)
+                .when()
+                .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
+                .then();
     }
 
-    public ValidatableResponse deleteMailByUserNameAndMailId(String userName, String mailId) {
+    public ValidatableResponse deleteUserMailById(String userName, String mailId) {
         log.info("DELETE Mail info By User Name and mail Id");
-        return baseSetupHeadersMailService()
-                        .when()
-                        .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + mailId)
-                        .then();
+        return given()
+                .spec(requestSpec)
+                .when()
+                .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + mailId)
+                .then();
     }
 }

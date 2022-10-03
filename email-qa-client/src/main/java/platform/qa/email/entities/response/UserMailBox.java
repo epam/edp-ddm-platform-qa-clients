@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 
-package platform.qa.email.models.messageResponseModel;
+package platform.qa.email.entities.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @Accessors(chain = true)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class MailUserByIdModel{
+public class UserMailBox implements Comparable<UserMailBox>{
 
 	@JsonProperty("posix-millis")
 	private long posixMillis;
-	private String date;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private Date date;
 	private String mailbox;
-	private List<Object> attachments;
 	private int size;
 	private String subject;
-	private Header header;
 	private String from;
 	private String id;
 	private List<String> to;
-	private Body body;
 	private boolean seen;
+
+	@Override
+	public int compareTo(UserMailBox otherUserMail) {
+		return getDate().compareTo(otherUserMail.getDate());
+	}
 }
