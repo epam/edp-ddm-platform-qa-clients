@@ -4,6 +4,7 @@ import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 
 public class JedisClient {
@@ -28,6 +29,10 @@ public class JedisClient {
 
     public long hset(String key, String field, String value) {
         return jedis.hset(key, field, value);
+    }
+
+    public long hset(String key, Map<String, String> hash) {
+        return jedis.hset(key, hash);
     }
 
     public Set<String> getAllKeys() {
