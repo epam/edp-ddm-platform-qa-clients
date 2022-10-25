@@ -31,13 +31,15 @@ import platform.qa.entities.Service;
 @Log4j2
 public class EmailService {
 
+    public static final String API_PATH = "api/v1/mailbox/";
     private final RequestSpecification requestSpec;
     private final Service emailService;
 
     public EmailService(Service emailService) {
         this.emailService = emailService;
-        this.emailService.setUrl(emailService.getUrl() + "api/v1/mailbox/");
-        this.requestSpec = new RequestSpecBuilder().setContentType(ContentType.JSON).build();
+        this.requestSpec = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
+                .build();
     }
 
     public ValidatableResponse getAllUserMails(String userName) {
@@ -45,7 +47,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .get(emailService.getUrl() + userName)
+                .get(emailService.getUrl() + API_PATH + userName)
                 .then();
     }
 
@@ -54,7 +56,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .get(emailService.getUrl() + userName + "/" + mailId)
+                .get(emailService.getUrl() + API_PATH + userName + "/" + mailId)
                 .then();
     }
 
@@ -63,7 +65,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .delete(emailService.getUrl() + userName)
+                .delete(emailService.getUrl() + API_PATH + userName)
                 .then();
     }
 
@@ -72,7 +74,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .delete(emailService.getUrl() + userName + "/" + mailId)
+                .delete(emailService.getUrl() + API_PATH + userName + "/" + mailId)
                 .then();
     }
 }
