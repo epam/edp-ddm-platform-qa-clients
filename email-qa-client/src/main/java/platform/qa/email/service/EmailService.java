@@ -36,6 +36,7 @@ public class EmailService {
 
     public EmailService(Service emailService) {
         this.emailService = emailService;
+        this.emailService.setUrl(emailService.getUrl() + "api/v1/mailbox/");
         this.requestSpec = new RequestSpecBuilder().setContentType(ContentType.JSON).build();
     }
 
