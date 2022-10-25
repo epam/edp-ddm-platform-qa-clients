@@ -15,9 +15,9 @@ public class EmailServiceTest {
 
     @Test
     public void getMailboxListByUserTest() {
-        when(emailService.getMailboxListByUser(anyString())).thenReturn(mailBoxListByUserResponse);
+        when(emailService.getAllUserMails(anyString())).thenReturn(mailBoxListByUserResponse);
 
-        var mailboxListByUser = emailService.getMailboxListByUser("test");
+        var mailboxListByUser = emailService.getAllUserMails("test");
 
         assertEquals(mailBoxListByUserResponse, mailboxListByUser);
     }

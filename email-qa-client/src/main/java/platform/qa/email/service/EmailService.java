@@ -23,6 +23,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.log4j.Log4j2;
+import platform.qa.entities.Service;
 
 /**
  * Service to get mails, read or delete
@@ -30,11 +31,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class EmailService {
 
-    public final static String E_MAIL_API_URL = System.getProperty("email.server");
-    public final String E_MAIL_API_ROUTE = "api/v1/mailbox/";
     private final RequestSpecification requestSpec;
+    private final Service emailService;
 
-    public EmailService() {
+    public EmailService(Service emailService) {
+        this.emailService = emailService;
         this.requestSpec = new RequestSpecBuilder().setContentType(ContentType.JSON).build();
     }
 
@@ -43,7 +44,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
+                .get(emailService.getUrl() + userName)
                 .then();
     }
 
@@ -52,7 +53,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .get(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + mailId)
+                .get(emailService.getUrl() + userName + "/" + mailId)
                 .then();
     }
 
@@ -61,7 +62,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName)
+                .delete(emailService.getUrl() + userName)
                 .then();
     }
 
@@ -70,7 +71,7 @@ public class EmailService {
         return given()
                 .spec(requestSpec)
                 .when()
-                .delete(E_MAIL_API_URL + E_MAIL_API_ROUTE + userName + "/" + mailId)
+                .delete(emailService.getUrl() + userName + "/" + mailId)
                 .then();
     }
 }
