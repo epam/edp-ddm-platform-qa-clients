@@ -62,7 +62,8 @@ public class JgitClient {
     private List<File> filesToUpload;
     private String destinationFolder;
 
-    @Getter private Service gerrit;
+    @Getter
+    private Service gerrit;
 
     public JgitClient(Service gerritToUploadData) {
         this.gerrit = gerritToUploadData;
@@ -290,6 +291,19 @@ public class JgitClient {
                 }
 
         );
+        return this;
+    }
+
+    public JgitClient removeFoldersFromLocalRepository(Git targetGit, List<String> folderPaths) {
+        folderPaths.forEach(path -> {
+            File file = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(),
+                    FilenameUtils.getName(path)).toFile();
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                throw new RuntimeException(path + " folder was not deleted");
+            }
+        });
         return this;
     }
 
