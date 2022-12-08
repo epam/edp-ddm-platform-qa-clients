@@ -295,15 +295,16 @@ public class JgitClient {
     }
 
     public JgitClient removeFoldersFromLocalRepository(Git targetGit, List<String> folderPaths) {
-        folderPaths.forEach(path -> {
-            File file = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(),
-                    FilenameUtils.getName(path)).toFile();
-            try {
-                FileUtils.deleteDirectory(file);
-            } catch (IOException e) {
-                throw new RuntimeException(path + " folder was not deleted");
-            }
-        });
+        if (folderPaths != null && !folderPaths.isEmpty())
+            folderPaths.forEach(path -> {
+                File file = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(),
+                        FilenameUtils.getName(path)).toFile();
+                try {
+                    FileUtils.deleteDirectory(file);
+                } catch (IOException e) {
+                    throw new RuntimeException(path + " folder was not deleted");
+                }
+            });
         return this;
     }
 
