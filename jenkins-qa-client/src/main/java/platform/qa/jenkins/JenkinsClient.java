@@ -18,6 +18,7 @@ package platform.qa.jenkins;
 
 import static org.awaitility.Awaitility.await;
 
+import com.offbytwo.jenkins.model.BuildResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -30,6 +31,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.junit.jupiter.api.Assertions;
 import com.google.common.base.Optional;
@@ -286,8 +289,9 @@ public class JenkinsClient {
         log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job у директорії {folderName}, назва "
                 + "job {jobName},номер збірки {buildId}", folderName, jobName, buildId));
         log.info("Job started " + jobName);
+        AtomicReference<Build> buildResult = new AtomicReference<>();
 
-        await()
+                await()
                 .pollInterval(waitConfiguration.getPoolIntervalTimeout(), waitConfiguration.getPoolIntervalTimeUnit())
                 .pollInSameThread()
                 .atMost(waitConfiguration.getWaitTimeout(), waitConfiguration.getWaitTimeUnit())
@@ -300,8 +304,12 @@ public class JenkinsClient {
                     Build build = server.getJob(folder.get(), jobName).getBuildByNumber(buildId);
                     Assertions.assertNotNull(build.details().getResult(), String.format("Waiting for job completion: "
                             + "%s", jobName));
+                    buildResult.set(build);
+
                 });
 
+        Assertions.assertEquals(BuildResult.SUCCESS, buildResult.get().details().getResult(),
+                String.format("Job must be with a status of SUCCESS: %s", buildResult.get().getUrl()));
         log.info("Job completed " + jobName);
     }
 
