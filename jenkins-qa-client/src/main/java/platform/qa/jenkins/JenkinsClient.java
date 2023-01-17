@@ -328,4 +328,39 @@ public class JenkinsClient {
         return server.getJob(folder.get(), jobName).getBuildByNumber((int) buildNumber).getUrl() + "artifact/excerpt"
                 + ".pdf";
     }
+
+    @SneakyThrows
+    public void waitLastJobCompletion(String folderName, String jobName) {
+        log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job у директорії "
+                + "{}, назва job {}", folderName, jobName));
+        log.info("Job started " + jobName);
+        AtomicReference<Build> buildResult = new AtomicReference<>();
+
+        await()
+                .pollInterval(waitConfiguration.getPoolIntervalTimeout(), waitConfiguration.getPoolIntervalTimeUnit())
+                .pollInSameThread()
+                .atMost(waitConfiguration.getWaitTimeout(), waitConfiguration.getWaitTimeUnit())
+                .ignoreExceptionsInstanceOf(NullPointerException.class)
+                .untilAsserted(() -> {
+                    var folderWithDetails = server.getJob(folderName);
+                    Assertions.assertNotNull(folderWithDetails, String.format("Folder %s does not exist", folderName));
+
+                    Optional<FolderJob> folderJob = server.getFolderJob(folderWithDetails);
+                    Assertions.assertNotNull(folderJob.orNull(), String.format("Folder %s does not exist", folderName));
+
+                    var job = server.getJob(folderJob.get(), jobName);
+                    Assertions.assertNotNull(job,
+                            String.format("Job %s does not exist in folder %s", jobName, folderWithDetails.getUrl()));
+
+                    Build build = job.getLastBuild();
+                    Assertions.assertNotNull(build.details().getResult(), String.format("Waiting for job completion: "
+                            + "%s", jobName));
+                    buildResult.set(build);
+
+                });
+
+        Assertions.assertEquals(BuildResult.SUCCESS, buildResult.get().details().getResult(),
+                String.format("Job must be with a status of SUCCESS: %s", buildResult.get().getUrl()));
+        log.info("Job completed " + jobName);
+    }
 }
