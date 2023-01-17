@@ -63,11 +63,10 @@ public class JenkinsRestClient extends JenkinsClient {
     }
 
     @SneakyThrows
-    public void startJobWithInputRequest(String jobFolder, String jobName,
-                                         Map<String, String> params,
-                                         Map<String, String> inputRequest) {
-        log.info(new ParameterizedMessage("Запуск Jenkins job з ім'ям {jobName} в папці {jobFolder}, параметрами "
-                + "{params} та користувацьким вибором {inputRequest}", jobName, jobFolder, params, inputRequest));
+    public void startJobWithInputRequest(String jobFolder, String jobName, Map<String, String> params, Map<String,
+            String> inputRequest) {
+        log.info(new ParameterizedMessage("Запуск Jenkins job з ім'ям {} в папці {}, параметрами "
+                + "{} та користувацьким вибором {}", jobName, jobFolder, params, inputRequest));
         waitForJobToBeAvailable(jobFolder, jobName);
 
         var build = getJobInFolder(jobFolder, jobName).build(params);
@@ -98,7 +97,7 @@ public class JenkinsRestClient extends JenkinsClient {
     }
 
     private void processUserInputRequest(String jobFolder, String jobName, long buildNumber,
-                                         Map<String, String> inputRequest) {
+            Map<String, String> inputRequest) {
         given()
                 .spec(requestSpecification)
                 .auth()

@@ -60,7 +60,7 @@ public class KeycloakClient {
                 .build();
     }
 
-    public IdentityProviderResource getIdentityProvider(String realm, String providerAlias){
+    public IdentityProviderResource getIdentityProvider(String realm, String providerAlias) {
         return keycloak.realm(realm).identityProviders().get(providerAlias);
     }
 
@@ -104,6 +104,7 @@ public class KeycloakClient {
     /**
      * Returns token for client
      * GrantType = OAuth2Constants.CLIENT_CREDENTIALS
+     *
      * @param client (!Set User realm and clientId)
      * @return keycloak user token
      */
@@ -199,7 +200,8 @@ public class KeycloakClient {
         assignRealmRoleToUser(user, keyCloakUser, realmRolesRep);
     }
 
-    private void assignRealmRoleToUser(User user, UserRepresentation keyCloakUser, List<RoleRepresentation> realmRolesRep) {
+    private void assignRealmRoleToUser(User user, UserRepresentation keyCloakUser,
+            List<RoleRepresentation> realmRolesRep) {
         await("Assign role for user")
                 .pollInterval(1, TimeUnit.SECONDS)
                 .atMost(1, TimeUnit.MINUTES)
@@ -213,7 +215,8 @@ public class KeycloakClient {
                 });
     }
 
-    private boolean isRoleAssignedForUser(User user, UserRepresentation keyCloakUser, List<RoleRepresentation> realmRoles) {
+    private boolean isRoleAssignedForUser(User user, UserRepresentation keyCloakUser,
+            List<RoleRepresentation> realmRoles) {
         var assignedRoles = getRealmRolesForUser(user.getRealm(), keyCloakUser.getId());
         var expectedRoles = realmRoles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
 

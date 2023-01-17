@@ -27,7 +27,6 @@ import lombok.extern.log4j.Log4j2;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Log4j2
 public abstract class BaseServiceClient {

@@ -27,6 +27,7 @@ import javax.ws.rs.client.ClientResponseFilter;
  */
 public class KeycloakLoggingFilter implements ClientResponseFilter {
     private static final Logger LOG = Logger.getLogger(KeycloakLoggingFilter.class.getName());
+
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
         LOG.info(String.format("\nRequest URI: %s\n" +
@@ -44,8 +45,9 @@ public class KeycloakLoggingFilter implements ClientResponseFilter {
                         + "Response message: %s\n"
                         + "Response date: %s\n",
                 responseContext.getStatus(),
-                responseContext.getStatusInfo() != null ? responseContext.getStatusInfo().getReasonPhrase() : responseContext.getStatusInfo(),
+                responseContext.getStatusInfo() != null ? responseContext.getStatusInfo().getReasonPhrase() :
+                        responseContext.getStatusInfo(),
                 responseContext.getDate()
-                ));
+        ));
     }
 }

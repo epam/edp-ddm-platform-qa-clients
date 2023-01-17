@@ -40,8 +40,8 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.common.collect.Lists;
 
 /**
- *  Client to work with Ceph storage.
- *  Use Ceph POJO as constructor parameter.
+ * Client to work with Ceph storage.
+ * Use Ceph POJO as constructor parameter.
  */
 public class CephClient {
     private final AmazonS3 client;
@@ -108,7 +108,7 @@ public class CephClient {
         S3Object object = uploadObjectFromBucket(bucketName, cephKey);
         File file = new File("file.txt");
 
-        try{
+        try {
             FileUtils.copyInputStreamToFile(object.getObjectContent(), file);
             return file;
         } finally {
@@ -121,7 +121,7 @@ public class CephClient {
         S3Object object = uploadObjectFromBucket(bucketName, cephKey);
         File file = new File("file." + type);
 
-        try{
+        try {
             FileUtils.copyInputStreamToFile(object.getObjectContent(), file);
             return file;
         } finally {

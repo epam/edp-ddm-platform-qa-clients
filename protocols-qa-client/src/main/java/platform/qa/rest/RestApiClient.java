@@ -40,7 +40,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import com.github.javafaker.Faker;
 
 /**
- *  Client to work with REST API requests
+ * Client to work with REST API requests
  */
 @Log4j2
 public class RestApiClient extends BaseServiceClient {
@@ -252,15 +252,14 @@ public class RestApiClient extends BaseServiceClient {
     }
 
     public HashMap<String, String> postAndReturnHeaders(IEntity payload, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url та повернення перелику заголовків запіту: {url}",
+        log.info(new ParameterizedMessage("POST до відповідного url та повернення переліку заголовків запиту: {}",
                 url));
         post(payload, url);
         return headers;
     }
 
     public ValidatableResponse sendGetWithParams(String url, Map<String, String> listParams) {
-        log.info(new ParameterizedMessage("GET до відповідного url: {url} з параметрами {listParams}", url,
-                listParams));
+        log.info(new ParameterizedMessage("GET до відповідного url: {} з параметрами {}", url, listParams));
         return waitFor(rs
                 .queryParams(listParams)
                 .when(), Method.GET, url)
@@ -268,107 +267,108 @@ public class RestApiClient extends BaseServiceClient {
     }
 
     public Response postNegative(IEntity payload, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
         return waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(payload), Method.POST, url);
     }
 
     public Response postWithWrongContentType(String payload, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
         return waitFor(rs
                 .contentType(ContentType.XML)
                 .body(payload), Method.POST, url);
     }
 
     public Response getNegative(String id, String url) {
-        log.info(new ParameterizedMessage("GET до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("GET до відповідного url: {}", url));
         return waitFor(rs, Method.GET, url + id);
     }
 
     public Response get(String url) {
-        log.info(new ParameterizedMessage("GET до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("GET до відповідного url: {}", url));
         return waitFor(rs, Method.GET, url);
     }
 
     public Response getWithParams(String url, Map params) {
-        log.info(new ParameterizedMessage("GET до відповідного url: {url} з параметрами: {params}", url, params));
+        log.info(new ParameterizedMessage("GET до відповідного url: {} з параметрами: {}", url, params));
         return this.rs.queryParams(params).when().get(url, new Object[0]);
     }
 
     public Response get(String id, String url) {
-        log.info(new ParameterizedMessage("GET до відповідного url: {url} з id {id}", url, id));
+        log.info(new ParameterizedMessage("GET до відповідного url: {} з id {}", url, id));
         Response response = waitFor(rs, Method.GET, url + id);
-        assertThat(response.getStatusCode()).as("Entity has not been inserted: " + response.body().asString()).isEqualTo(200);
+        assertThat(response.getStatusCode()).as("Entity was not returned: " + response.body().asString()).isEqualTo(200);
         return response;
     }
 
     public Response post(IEntity payload, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
         Response response = waitFor(rs.contentType(ContentType.JSON).body(payload), Method.POST, url);
-        assertThat(response.getStatusCode()).as("Entity has not been inserted: " + response.body().asString()).isEqualTo(201);
+        assertThat(response.getStatusCode()).as("Entity was not inserted: "
+                + response.body().asString()).isEqualTo(201);
         return response;
     }
 
     public Response post(String body, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
         return waitFor(rs.contentType(ContentType.JSON).body(body), Method.POST, url);
     }
 
     public void put(String id, IEntity payload, String url) {
-        log.info(new ParameterizedMessage("PUT до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("PUT до відповідного url: {}", url));
         var rp = waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(payload), Method.PUT, url + id)
                 .then()
                 .extract();
-        assertThat(rp.statusCode()).as("Entity has not been updated: " + rp.body().asString()).isEqualTo(204);
+        assertThat(rp.statusCode()).as("Entity was not updated: " + rp.body().asString()).isEqualTo(204);
     }
 
     public void put(String id, String body, String url) {
-        log.info(new ParameterizedMessage("PUT до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("PUT до відповідного url: {}", url));
         var rp = waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(body), Method.PUT, url + id)
                 .then()
                 .extract();
-        assertThat(rp.statusCode()).as("Entity has not been updated: " + rp.body().asString()).isEqualTo(204);
+        assertThat(rp.statusCode()).as("Entity was not updated: " + rp.body().asString()).isEqualTo(204);
     }
 
     public Response putUpsert(IEntity payload, String url) {
-        log.info(new ParameterizedMessage("UPSERT до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("UPSERT до відповідного url: {}", url));
         return waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(payload), Method.PUT, url);
     }
 
     public ExtractableResponse<Response> put(IEntity payload, String url) {
-        log.info(new ParameterizedMessage("PUT до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("PUT до відповідного url: {}", url));
         var rp = waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(payload), Method.PUT, url)
                 .then()
                 .extract();
-        assertThat(rp.statusCode()).as("Entity has not been updated: " + rp.body().asString()).isEqualTo(200);
+        assertThat(rp.statusCode()).as("Entity was not updated: " + rp.body().asString()).isEqualTo(200);
         return rp;
     }
 
     public void delete(String id, String url) {
-        log.info(new ParameterizedMessage("DELETE до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("DELETE до відповідного url: {}", url));
         var rp = waitFor(rs, Method.DELETE, url + id)
                 .then()
                 .extract();
-        assertThat(rp.statusCode()).as("Entity has not been inserted: " + rp.body().asString()).isEqualTo(204);
+        assertThat(rp.statusCode()).as("Entity was not deleted: " + rp.body().asString()).isEqualTo(204);
     }
 
     public void patch(String id, IEntity payload, String url) {
-        log.info(new ParameterizedMessage("PATCH до відповідного url: {url}", url));
+        log.info(new ParameterizedMessage("PATCH до відповідного url: {}", url));
         var rp = waitFor(rs
                 .contentType(ContentType.JSON)
                 .body(payload), Method.PATCH, url + id)
                 .then()
                 .extract();
-        assertThat(rp.statusCode()).as("Entity has not been deleted: " + rp.body().asString()).isEqualTo(204);
+        assertThat(rp.statusCode()).as("Entity was not updated: " + rp.body().asString()).isEqualTo(204);
     }
 
 }

@@ -18,7 +18,6 @@ package platform.qa.jenkins;
 
 import static org.awaitility.Awaitility.await;
 
-import com.offbytwo.jenkins.model.BuildResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -32,13 +31,13 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.junit.jupiter.api.Assertions;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Build;
+import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.FolderJob;
 import com.offbytwo.jenkins.model.JobWithDetails;
 
@@ -145,8 +144,8 @@ public class JenkinsClient {
     }
 
     public void waitForJobToBeAvailable(String folderName, String jobName) {
-        log.info(new ParameterizedMessage("Перевірка наявності та очікування Jenkins job-и: {jobName} в папці: "
-                + "{folderName}", jobName, folderName));
+        log.info(new ParameterizedMessage("Перевірка наявності та очікування Jenkins job-и: {} в папці: {}", jobName,
+                folderName));
         await()
                 .pollInterval(waitConfiguration.getPoolIntervalTimeout(), waitConfiguration.getPoolIntervalTimeUnit())
                 .pollInSameThread()
@@ -165,7 +164,7 @@ public class JenkinsClient {
 
     @SneakyThrows
     public boolean isJobPresent(String folderName, String jobName) {
-        log.info(new ParameterizedMessage("Первірка наявності Jenkins job-и {jobName}", jobName));
+        log.info(new ParameterizedMessage("Первірка наявності Jenkins job-и {}", jobName));
         var job = server.getJob(folderName);
         Assertions.assertNotNull(job);
         Optional<FolderJob> folder = server.getFolderJob(job);
@@ -175,8 +174,8 @@ public class JenkinsClient {
 
     @SneakyThrows
     public void waitJobCompletion(String jobName, long buildId) {
-        log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job {jobName} для збірки {buildId}",
-                jobName, buildId));
+        log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job {} для збірки {}", jobName,
+                buildId));
         log.info("Job started " + jobName);
 
         await()
@@ -249,8 +248,8 @@ public class JenkinsClient {
     }
 
     public long startJobInFolder(String folderName, String jobName, HashMap<String, String> params) {
-        log.info(new ParameterizedMessage("Запуск Jenkins job-и {jobName} з папки {folderName} за повернення її "
-                + "номеру", jobName, folderName));
+        log.info(new ParameterizedMessage("Запуск Jenkins job-и {} з папки {} за повернення її номеру", jobName,
+                folderName));
         try {
 
             var job = server.getJob(folderName);
@@ -286,12 +285,12 @@ public class JenkinsClient {
 
     @SneakyThrows
     public void waitJobCompletion(String folderName, String jobName, int buildId) {
-        log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job у директорії {folderName}, назва "
-                + "job {jobName},номер збірки {buildId}", folderName, jobName, buildId));
+        log.info(new ParameterizedMessage("Очікування завершення роботи Jenkins job у директорії {}, назва "
+                + "job {},номер збірки {}", folderName, jobName, buildId));
         log.info("Job started " + jobName);
         AtomicReference<Build> buildResult = new AtomicReference<>();
 
-                await()
+        await()
                 .pollInterval(waitConfiguration.getPoolIntervalTimeout(), waitConfiguration.getPoolIntervalTimeUnit())
                 .pollInSameThread()
                 .atMost(waitConfiguration.getWaitTimeout(), waitConfiguration.getWaitTimeUnit())
@@ -315,15 +314,13 @@ public class JenkinsClient {
 
     @SneakyThrows
     public String getJobUrlByBuildNumber(String jobName, long buildNumber) {
-        log.info(new ParameterizedMessage("Отримання URL до jenkins job за {jobName} та {buildNumber}", jobName,
-                buildNumber));
+        log.info(new ParameterizedMessage("Отримання URL до jenkins job за {} та {}", jobName, buildNumber));
         return server.getJob(jobName).getBuildByNumber((int) buildNumber).getUrl() + "artifact/excerpt.pdf";
     }
 
     @SneakyThrows
     public String getJobUrlByBuildNumber(String folderName, String jobName, long buildNumber) {
-        log.info(new ParameterizedMessage("Отримання URL до jenkins job за {jobName} та {buildNumber}", jobName,
-                buildNumber));
+        log.info(new ParameterizedMessage("Отримання URL до jenkins job за {} та {}", jobName, buildNumber));
         var job = server.getJob(folderName);
         Assertions.assertNotNull(job);
         Optional<FolderJob> folder = server.getFolderJob(job);

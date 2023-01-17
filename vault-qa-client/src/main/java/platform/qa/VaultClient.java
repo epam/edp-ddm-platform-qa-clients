@@ -64,10 +64,13 @@ public class VaultClient {
 
     /**
      * Create secret or rewrite secret
+     *
      * @param pathSecrets - path to secret
-     * @param secrets - map with some data for pathSecrets:
-     * Info: v2 or v1, data - additional elements will be automatically added to the context path (vault-java-driver)
-     * Example secret "platform-integration/mdtu-ddm-edp-cicd-lowcode-dev-dev/mdtu-ddm-edp-cicd-lowcode-dev-dev"
+     * @param secrets     - map with some data for pathSecrets:
+     *                    Info: v2 or v1, data - additional elements will be automatically added to the context path
+     *                    (vault-java-driver)
+     *                    Example secret "platform-integration/mdtu-ddm-edp-cicd-lowcode-dev-dev/mdtu-ddm-edp-cicd
+     *                    -lowcode-dev-dev"
      */
     public void createSecreteData(String pathSecrets, Map<String, Object> secrets) {
         LogicalResponse writeResponse;
@@ -85,9 +88,10 @@ public class VaultClient {
 
     /**
      * Gets map with data secrete or empty map
+     *
      * @param pathSecret - path to secret. Example, the part that needs to be sent to get the secret data:
-     * {pathSecrets} "baseUrl/ui/vault/secrets/{pathSecrets}"
-     * @return  Map<String, String> from data
+     *                   {pathSecrets} "baseUrl/ui/vault/secrets/{pathSecrets}"
+     * @return Map<String, String> from data
      */
     public Map<String, String> getDataSecrete(String pathSecret) {
         LogicalResponse writeResponse;

@@ -63,8 +63,7 @@ public class SoapClient extends BaseServiceClient {
     }
 
     public ResponseBodyExtractionOptions post(String payload, String url) {
-        log.info(new ParameterizedMessage("POST до відповідного url: {url} з тілом повідомлення {payload}", url,
-                payload));
+        log.info(new ParameterizedMessage("POST до відповідного url: {} з тілом повідомлення {}", url, payload));
         return waitFor(rs
                 .body(payload), Method.POST, url)
                 .then()

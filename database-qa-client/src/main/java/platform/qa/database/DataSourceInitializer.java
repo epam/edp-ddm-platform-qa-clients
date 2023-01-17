@@ -25,7 +25,7 @@ import com.jcabi.aspects.Cacheable;
 
 
 /**
- *  DataSource to get database connection
+ * DataSource to get database connection
  */
 public final class DataSourceInitializer {
     private DataSourceInitializer() {

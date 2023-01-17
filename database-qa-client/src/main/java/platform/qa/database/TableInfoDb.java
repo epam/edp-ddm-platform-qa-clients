@@ -295,7 +295,8 @@ public class TableInfoDb {
     }
 
     public long getCountsOfRowsInTable(String tableName) {
-        log.info(String.format("Отримання кількості записів в таблиці БД: %s за виключенням авто-згенерованих значень", tableName));
+        log.info(String.format("Отримання кількості записів в таблиці БД: %s за виключенням авто-згенерованих "
+                + "значень", tableName));
         String query = "SELECT COUNT(*) FROM " + tableName + " WHERE ddm_created_by ='admin'";
         return Long.parseLong(waitAndGetEntity(query, false));
     }

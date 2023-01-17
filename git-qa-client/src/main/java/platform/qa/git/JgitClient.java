@@ -268,7 +268,7 @@ public class JgitClient {
     }
 
     public JgitClient replaceDataInFolder(Git targetGit, String folderPath, String originalText,
-                                          String replacementText) {
+            String replacementText) {
         File[] filesDataFolder = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(),
                 FilenameUtils.getName(folderPath)).toFile().listFiles();
         Arrays.stream(Objects.requireNonNull(filesDataFolder)).forEach(
