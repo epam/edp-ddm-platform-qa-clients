@@ -185,8 +185,21 @@ public class KeycloakClient {
 
     }
 
-    public List<UserRepresentation> getAllUsersFromRealm(String realmName) {
-        return this.keycloak.realm(realmName).users().list();
+    public List<User> getAllUsersFromRealm(String realmName) {
+        List<UserRepresentation> userRepresentationList = this.keycloak.realm(realmName).users().list();
+        List<User> userList = new ArrayList<>();
+        User user;
+
+        for (UserRepresentation userRepresentation : userRepresentationList) {
+            user = User.builder()
+                    .login(userRepresentation.getId())
+                    .mail(userRepresentation.getEmail())
+                    .attributes(userRepresentation.getAttributes())
+                    .build();
+            userList.add(user);
+        }
+
+        return userList;
     }
 
     private UserRepresentation searchUserByAttributes(String realmName, Map<String, List<String>> attributes) {
