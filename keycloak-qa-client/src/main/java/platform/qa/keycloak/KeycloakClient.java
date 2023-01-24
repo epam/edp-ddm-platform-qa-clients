@@ -185,6 +185,10 @@ public class KeycloakClient {
 
     }
 
+    public List<UserRepresentation> getAllUsersFromRealm(String realmName) {
+        return this.keycloak.realm(realmName).users().list();
+    }
+
     private UserRepresentation searchUserByAttributes(String realmName, Map<String, List<String>> attributes) {
         List<UserRepresentation> userResource = this.keycloak.realm(realmName).users().list();
         return userResource.stream()
