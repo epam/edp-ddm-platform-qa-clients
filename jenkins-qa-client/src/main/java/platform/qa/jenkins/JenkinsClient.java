@@ -137,10 +137,8 @@ public class JenkinsClient {
                 .pollInSameThread()
                 .atMost(waitConfiguration.getWaitTimeout(), waitConfiguration.getWaitTimeUnit())
 
-                .untilAsserted(() -> {
-                    Assertions.assertTrue(isJobPresent(jobName),
-                            String.format("Waiting for job to be available: %s", jobName));
-                });
+                .untilAsserted(() -> Assertions.assertTrue(isJobPresent(jobName),
+                        String.format("Waiting for job to be available: %s", jobName)));
     }
 
     public void waitForJobToBeAvailable(String folderName, String jobName) {
@@ -362,5 +360,23 @@ public class JenkinsClient {
         Assertions.assertEquals(BuildResult.SUCCESS, buildResult.get().details().getResult(),
                 String.format("Job must be with a status of SUCCESS: %s", buildResult.get().getUrl()));
         log.info("Job completed " + jobName);
+    }
+
+    @SneakyThrows
+    public int getLastCompletedBuildForJob(String folderName, String jobName) {
+        var job = server.getJob(folderName);
+        Assertions.assertNotNull(job);
+        Optional<FolderJob> folder = server.getFolderJob(job);
+
+        return server.getJob(folder.get(), jobName).getLastCompletedBuild().getNumber();
+    }
+
+    @SneakyThrows
+    public Build getBuildForJobByNumber(String folderName, String jobName, int buildNumber) {
+        var job = server.getJob(folderName);
+        Assertions.assertNotNull(job);
+        Optional<FolderJob> folder = server.getFolderJob(job);
+
+        return server.getJob(folder.get(), jobName).getBuildByNumber(buildNumber);
     }
 }

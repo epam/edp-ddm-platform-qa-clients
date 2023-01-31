@@ -1,10 +1,12 @@
 package platform.qa.jenkins;
 
-import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Map;
-
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
 
 public class JenkinsRestClientTest {
     JenkinsRestClient jenkinsRestClient = mock(JenkinsRestClient.class);
