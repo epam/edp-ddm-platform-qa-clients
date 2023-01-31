@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -66,11 +67,13 @@ public class GerritClient {
     private static final String REVIEW_ENDPOINT = "/a/changes/{changeId}/revisions/{revision}/review";
     private static final String SUBMIT_ENDPOINT = "/a/changes/{changeId}/revisions/{revision}/submit";
     private static final String PROJECT_ENDPOINT = "/a/projects/{projectName}";
+    private static final String DELETE_ENDPOINT = "/a/changes/{changeId}";
     public static final String BUILD_SUCCESSFUL = "Build Successful";
     public static final String BUILD_FAILED = "Build Failed";
 
     private final RequestSpecification requestSpec;
-    @Setter private WaitConfiguration waitConfiguration;
+    @Setter
+    private WaitConfiguration waitConfiguration;
 
     private String defaultRepositoryName = "registry-regulations";
     private String folder;
@@ -284,18 +287,20 @@ public class GerritClient {
                 .get(CHANGE_ENDPOINT)
                 .body().asString().replace(")]}'", "");
 
-        return new ObjectMapper().readValue(json, new TypeReference<>() {});
+        return new ObjectMapper().readValue(json, new TypeReference<>() {
+        });
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public Map<String, Object> getRepository(String name){
+    public Map<String, Object> getRepository(String name) {
         String json = given()
                 .spec(requestSpec)
                 .pathParam("projectName", name)
                 .get(PROJECT_ENDPOINT)
-                .body().asString().replace(")]}'", "").replaceAll("Not found.*\\n","{}");
+                .body().asString().replace(")]}'", "").replaceAll("Not found.*\\n", "{}");
 
-        return new ObjectMapper().readValue(json, new TypeReference<>() {});
+        return new ObjectMapper().readValue(json, new TypeReference<>() {
+        });
     }
 
     private String getUrlFromText(String lineToSearch) {
@@ -316,5 +321,36 @@ public class GerritClient {
             throw new RuntimeException("File does not exist!", e);
         }
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public void markChangeAsVerified(String changeId, int revision, Object verified) {
+        log.info("Встановлення значення verified у існуючому запиті з id =" + changeId + " у Gerrit");
+        Map<String, Object> payload =
+                Map.of(
+                        "labels", Map.of("Verified", verified),
+                        "message", StringUtils.EMPTY,
+                        "reviewers", Collections.EMPTY_LIST.toArray());
+
+        given()
+                .spec(requestSpec)
+                .pathParam(CHANGE_ID, changeId)
+                .pathParam("revision", revision)
+                .when()
+                .body(payload)
+                .post(REVIEW_ENDPOINT)
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+        log.info("Verified status has been changed");
+    }
+
+    public String getChangesDetailByIdAsString(String changeId) {
+        String response = given().spec(requestSpec)
+                .pathParam(CHANGE_ID, changeId)
+                .when()
+                .get(DETAILS_ENDPOINT).then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .extract().body().asString().replace(")]}'", "");
+        return response;
     }
 }
