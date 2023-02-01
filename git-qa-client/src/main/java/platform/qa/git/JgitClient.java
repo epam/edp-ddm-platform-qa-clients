@@ -297,8 +297,7 @@ public class JgitClient {
     public JgitClient removeFoldersFromLocalRepository(Git targetGit, List<String> folderPaths) {
         if (folderPaths != null && !folderPaths.isEmpty())
             folderPaths.forEach(path -> {
-                File file = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(),
-                        FilenameUtils.getName(path)).toFile();
+                File file = Path.of(targetGit.getRepository().getWorkTree().getAbsolutePath(), path).toFile();
                 try {
                     FileUtils.deleteDirectory(file);
                 } catch (IOException e) {
