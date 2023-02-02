@@ -358,6 +358,7 @@ public class GerritClient {
                 .spec(requestSpec)
                 .pathParam(CHANGE_ID, changeId)
                 .when()
+                .body("{}")
                 .delete(DELETE_ENDPOINT)
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
