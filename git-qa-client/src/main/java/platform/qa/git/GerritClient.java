@@ -35,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 import platform.qa.entities.Service;
 import platform.qa.entities.WaitConfiguration;
 import platform.qa.git.entity.Status;
+import platform.qa.git.entity.changes.ChangesDetailResponse;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +46,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +53,6 @@ import org.apache.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import platform.qa.git.entity.changes.ChangesDetailResponse;
 
 /**
  * Client to work with Gerrit create, review, submit changes
@@ -324,7 +323,7 @@ public class GerritClient {
     }
 
     public void markChangeAsVerified(String changeId, int revision, Object verified) {
-        log.info("Встановлення значення verified у існуючому запиті з id =" + changeId + " у Gerrit");
+        log.info("Встановлення значення verified у існуючому запиті з id = " + changeId + " у Gerrit");
         Map<String, Object> payload =
                 Map.of(
                         "labels", Map.of("Verified", verified),
@@ -344,13 +343,23 @@ public class GerritClient {
     }
 
     public String getChangesDetailByIdAsString(String changeId) {
-        String response = given().spec(requestSpec)
+        return given().spec(requestSpec)
                 .pathParam(CHANGE_ID, changeId)
                 .when()
                 .get(DETAILS_ENDPOINT).then()
                 .statusCode(HttpStatus.SC_OK)
                 .contentType(ContentType.JSON)
                 .extract().body().asString().replace(")]}'", "");
-        return response;
+    }
+
+    public void deleteChange(String changeId) {
+        log.info("Deleting change with id " + changeId);
+        given()
+                .spec(requestSpec)
+                .pathParam(CHANGE_ID, changeId)
+                .when()
+                .delete(DELETE_ENDPOINT)
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 }
