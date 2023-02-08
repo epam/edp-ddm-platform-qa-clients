@@ -44,6 +44,7 @@ public class JenkinsRestClient extends JenkinsClient {
     private final Service jenkins;
 
     private static final String INPUT_REQUEST_URL = "job/{jobFolder}/job/{jobName}/{buildNumber}/input/";
+    private static final String SCRIPT_REQUEST_URL = "scriptText";
 
     public JenkinsRestClient(Service jenkins, String inputRequestId) {
         super(jenkins);
@@ -130,5 +131,18 @@ public class JenkinsRestClient extends JenkinsClient {
 
                     assertThat(response).contains("Paused for Input :");
                 });
+    }
+
+    public void executeJenkinsScript(String script){
+        given()
+                .spec(requestSpecification)
+                .contentType("multipart/form-data")
+                .auth()
+                .preemptive()
+                .basic(jenkins.getUser().getLogin(), jenkins.getUser().getPassword())
+                .multiPart("script", script)
+                .post(SCRIPT_REQUEST_URL)
+                .then()
+                .statusCode(200);
     }
 }
