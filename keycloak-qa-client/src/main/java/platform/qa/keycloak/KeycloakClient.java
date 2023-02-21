@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.WebApplicationException;
@@ -145,12 +146,30 @@ public class KeycloakClient {
     }
 
     public void createUser(User user) {
-
         if (!user.isInitiated()) {
             enableClientDirectAccessGrants(user.getRealm(), user.getClientId());
 
             keycloak.realm(user.getRealm()).users().create(initUserData(user));
             createRealmRoles(user.getRealm(), user.getRealmRoles());
+            setUserRealmRoles(user);
+            user.setInitiated(true);
+        }
+    }
+
+    public void createUser(User user, String namespace) {
+        if (!user.isInitiated()) {
+            enableClientDirectAccessGrants(user.getRealm(), user.getClientId());
+
+            keycloak.realm(user.getRealm()).users().create(initUserData(user));
+            List<String> realmRoles = user.getRealmRoles();
+
+            if (user.getClientId().equals("admin-portal")) {
+                IntStream.range(0, realmRoles.size())
+                        .filter(i -> realmRoles.get(i).equals("cp-registry-admin"))
+                        .forEach(i -> realmRoles.set(i, "cp-registry-admin-".concat(namespace)));
+            }
+
+            createRealmRoles(user.getRealm(), realmRoles);
             setUserRealmRoles(user);
             user.setInitiated(true);
         }
