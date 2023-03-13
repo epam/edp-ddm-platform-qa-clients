@@ -221,6 +221,11 @@ public class KeycloakClient {
         return userList;
     }
 
+    public List<String> getRealmRolesForUser(String realm, String keycloakUserId) {
+        var realmRoles = keycloak.realm(realm).users().get(keycloakUserId).roles().realmLevel().listAll();
+        return realmRoles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
+    }
+
     private UserRepresentation searchUserByAttributes(String realmName, Map<String, List<String>> attributes) {
         List<UserRepresentation> userResource = this.keycloak.realm(realmName).users().list();
         return userResource.stream()
@@ -237,7 +242,7 @@ public class KeycloakClient {
     }
 
     private void assignRealmRoleToUser(User user, UserRepresentation keyCloakUser,
-            List<RoleRepresentation> realmRolesRep) {
+                                       List<RoleRepresentation> realmRolesRep) {
         await("Assign role for user")
                 .pollInterval(1, TimeUnit.SECONDS)
                 .atMost(1, TimeUnit.MINUTES)
@@ -252,16 +257,11 @@ public class KeycloakClient {
     }
 
     private boolean isRoleAssignedForUser(User user, UserRepresentation keyCloakUser,
-            List<RoleRepresentation> realmRoles) {
+                                          List<RoleRepresentation> realmRoles) {
         var assignedRoles = getRealmRolesForUser(user.getRealm(), keyCloakUser.getId());
         var expectedRoles = realmRoles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
 
         return assignedRoles.containsAll(expectedRoles);
-    }
-
-    private List<String> getRealmRolesForUser(String realm, String keycloakUserId) {
-        var realmRoles = keycloak.realm(realm).users().get(keycloakUserId).roles().realmLevel().listAll();
-        return realmRoles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
     }
 
     private void createRealmRoles(String realm, List<String> roles) {
