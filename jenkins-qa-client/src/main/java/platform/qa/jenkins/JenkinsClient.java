@@ -107,10 +107,10 @@ public class JenkinsClient {
             final long[] number = new long[1];
 
             await()
-                    .pollInterval(1, TimeUnit.SECONDS)
+                    .pollInterval(waitConfiguration.getPoolIntervalTimeout(), waitConfiguration.getPoolIntervalTimeUnit())
                     .pollInSameThread()
-                    .atMost(poolIntervalTimeout, TimeUnit.MINUTES)
-
+                    .atMost(waitConfiguration.getWaitTimeout(), waitConfiguration.getWaitTimeUnit())
+                    .ignoreExceptionsInstanceOf(NullPointerException.class)
                     .untilAsserted(() -> {
                         var item = server.getQueueItem(build);
                         if (item.getWhy() != null)
