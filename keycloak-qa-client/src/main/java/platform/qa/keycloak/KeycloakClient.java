@@ -43,9 +43,9 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 public class KeycloakClient {
+    private static final String MASTER_REALM_NAME = "master";
     private final Keycloak keycloak;
     private final Service keycloakService;
-    private static final String MASTER_REALM_NAME = "master";
 
     public KeycloakClient(Service keycloakService) {
         this.keycloakService = keycloakService;
@@ -219,6 +219,15 @@ public class KeycloakClient {
         }
 
         return userList;
+    }
+
+    public void deleteAllUsersInRealm(String realmName) {
+        var users = new ArrayList<>(keycloak
+                .realm(realmName)
+                .users()
+                .list());
+
+        users.forEach(user -> keycloak.realm(realmName).users().delete(user.getId()));
     }
 
     public List<String> getRealmRolesForUser(String realm, String keycloakUserId) {
