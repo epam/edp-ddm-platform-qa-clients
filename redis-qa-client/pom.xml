@@ -6,7 +6,7 @@
     <parent>
         <artifactId>platform-qa-clients</artifactId>
         <groupId>platform.qa</groupId>
-        <version>1.6.0.92</version>
+        <version>1.6.0.93</version>
     </parent>
     <artifactId>redis-qa-client</artifactId>
 

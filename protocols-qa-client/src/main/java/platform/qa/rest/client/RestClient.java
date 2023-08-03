@@ -77,12 +77,13 @@ public interface RestClient {
                                      @Nullable Map<String, String> pathParams,
                                      Request body,
                                      Type type,
-                                     int statusCode);
+                                     int statusCode,
+                                     @Nullable Map<String, String> headers);
 
     /**
      * DELETE HTTP request
      * @param path path to REST API
      * @param statusCode expected request status code
      */
-    void delete(String path, int statusCode);
+    void delete(String path, int statusCode, @Nullable Map<String, String> headers);
 }

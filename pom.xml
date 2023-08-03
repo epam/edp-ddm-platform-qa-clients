@@ -7,7 +7,8 @@
     <groupId>platform.qa</groupId>
     <artifactId>platform-qa-clients</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0.92</version>
+    <version>1.6.0.93</version>
+
 
     <modules>
         <module>protocols-qa-client</module>

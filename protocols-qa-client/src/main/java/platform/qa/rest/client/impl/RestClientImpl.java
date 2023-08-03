@@ -92,14 +92,20 @@ public class RestClientImpl implements RestClient {
                                             @Nullable Map<String, String> pathParams,
                                             Request body,
                                             Type type,
-                                            int statusCode) {
+                                            int statusCode,
+                                            @Nullable Map<String, String> headers) {
 
         log.info(MessageFormat.format(
                 "Performing PUT request on {0} with path params {1} with body {2}",
                 path, pathParams, JsonUtils.toJson(body))
         );
+        RequestSpecification requestSpec = prepareRequestSpecification(pathParams);
 
-        return extractResult(prepareRequestSpecification(pathParams)
+        if (headers != null) {
+            requestSpec.headers(headers);
+        }
+
+        return extractResult(requestSpec
                         .body(body)
                         .put(path)
                         .then()
@@ -109,8 +115,12 @@ public class RestClientImpl implements RestClient {
     }
 
     @Override
-    public void delete(String path, int statusCode) {
+    public void delete(String path, int statusCode, @Nullable Map<String, String> headers) {
         log.info(MessageFormat.format("Performing DELETE request on {0}", path));
+
+        if (headers != null) {
+            prepareRequestSpecification().headers(headers);
+        }
 
         prepareRequestSpecification()
                 .delete(path)
