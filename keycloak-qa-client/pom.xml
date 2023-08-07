@@ -5,14 +5,14 @@
     <parent>
         <artifactId>platform-qa-clients</artifactId>
         <groupId>platform.qa</groupId>
-        <version>1.6.0.93</version>
+        <version>1.6.0.94</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>keycloak-qa-client</artifactId>
 
     <properties>
-        <keycloak-admin-client.version>16.1.1</keycloak-admin-client.version>
+        <keycloak-admin-client.version>20.0.3</keycloak-admin-client.version>
         <assertj-core.version>3.22.0</assertj-core.version>
     </properties>
 

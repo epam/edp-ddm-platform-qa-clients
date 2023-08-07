@@ -20,6 +20,8 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import platform.qa.entities.Service;
 import platform.qa.entities.User;
 
@@ -32,7 +34,6 @@ import java.util.stream.IntStream;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.WebApplicationException;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -51,13 +52,13 @@ public class KeycloakClient {
         this.keycloakService = keycloakService;
         var user = keycloakService.getUser();
         this.keycloak = KeycloakBuilder.builder()
-                .serverUrl(keycloakService.getUrl() + "auth")
+                .serverUrl(keycloakService.getUrl())
                 .realm(MASTER_REALM_NAME)
                 .grantType(OAuth2Constants.PASSWORD)
                 .clientId("admin-cli")
                 .username(user.getLogin())
                 .password(user.getPassword())
-                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
+                .resteasyClient(createResteasyClient())
                 .build();
     }
 
@@ -88,18 +89,19 @@ public class KeycloakClient {
      * @return keycloak user token
      */
     public String getAccessToken(String realm, User user) {
-        Keycloak keycloak = KeycloakBuilder.builder()
-                .serverUrl(this.keycloakService.getUrl() + "auth")
+        try (Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(this.keycloakService.getUrl())
                 .realm(realm)
                 .grantType(OAuth2Constants.PASSWORD)
                 .clientId(user.getClientId())
                 .username(user.getLogin())
                 .password(user.getPassword())
                 .clientSecret(getClientSecret(user.getRealm(), user.getClientId()))
-                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                .build();
+                .resteasyClient(createResteasyClient())
+                .build()) {
 
-        return keycloak.tokenManager().getAccessTokenString();
+            return keycloak.tokenManager().getAccessTokenString();
+        }
     }
 
     /**
@@ -113,14 +115,18 @@ public class KeycloakClient {
         if (client == null || client.getRealm() == null || client.getClientId() == null) {
             throw new IllegalStateException("realm and clientId - required params " + client);
         }
-        return KeycloakBuilder.builder()
-                .serverUrl(this.keycloakService.getUrl() + "auth")
+
+        try (Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(this.keycloakService.getUrl())
                 .realm(client.getRealm())
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(client.getClientId())
                 .clientSecret(getClientSecret(client.getRealm(), client.getClientId()))
-                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                .build().tokenManager().getAccessTokenString();
+                .resteasyClient(createResteasyClient())
+                .build()) {
+
+            return keycloak.tokenManager().getAccessTokenString();
+        }
     }
 
     public String getClientSecret(String realmName, String clientId) {
@@ -339,5 +345,9 @@ public class KeycloakClient {
         credentialRepresentation.setValue(user.getPassword());
         credentialRepresentation.setTemporary(false);
         return credentialRepresentation;
+    }
+
+    private ResteasyClient createResteasyClient() {
+        return new ResteasyClientBuilderImpl().register(KeycloakLoggingFilter.class).connectionPoolSize(10).build();
     }
 }
