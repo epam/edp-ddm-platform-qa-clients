@@ -310,6 +310,14 @@ public class RestApiClient extends BaseServiceClient {
         return response;
     }
 
+    public Response postSearchCondition(IEntity payload, String url,Map<String, String> listParams) {
+        log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
+        Response response = waitFor(rs.contentType(ContentType.JSON).body(payload).queryParams(listParams), Method.POST, url);
+        assertThat(response.getStatusCode()).as("Entity was not inserted: "
+                + response.body().asString()).isEqualTo(200);
+        return response;
+    }
+
     public Response post(String body, String url) {
         log.info(new ParameterizedMessage("POST до відповідного url: {}", url));
         return waitFor(rs.contentType(ContentType.JSON).body(body), Method.POST, url);
