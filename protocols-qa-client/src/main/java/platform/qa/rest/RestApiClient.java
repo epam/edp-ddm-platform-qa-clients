@@ -59,6 +59,7 @@ public class RestApiClient extends BaseServiceClient {
     private String xSourceBusinessActivity = "X-Source-Business-Activity";
     private String xSourceBusinessProcessDefinitionId = "X-Source-Business-Process-Definition-Id";
     private String xSourceBusinessProcessInstanceId = "X-Source-Business-Process-Instance-Id";
+    private String xSourceRootBusinessProcessInstanceId = "X-Source-Root-Business-Process-Instance-Id";
     private String xSourceBusinessActivityInstanceId = "X-Source-Business-Activity-Instance-Id";
     private String xAccessToken = "X-Access-Token";
     private String xDigitalSignature = "X-Digital-Signature";
@@ -86,7 +87,9 @@ public class RestApiClient extends BaseServiceClient {
         put(xSourceBusinessActivityInstanceId, UUID.randomUUID().toString());
 
         if (!isBusinessProcessIdSetted) {
-            put(xSourceBusinessProcessInstanceId, UUID.randomUUID().toString());
+            String id = UUID.randomUUID().toString();
+            put(xSourceBusinessProcessInstanceId, id);
+            put(xSourceRootBusinessProcessInstanceId, id);
         }
     }};
 
@@ -145,6 +148,7 @@ public class RestApiClient extends BaseServiceClient {
 
         headers.putAll(mandatoryHeaders);
         nonMandatoryHeaders.put(xSourceBusinessProcessInstanceId, businessProcessInstanceId);
+        nonMandatoryHeaders.put(xSourceRootBusinessProcessInstanceId, businessProcessInstanceId);
         headers.putAll(nonMandatoryHeaders);
         rs = addHeaders(headers);
     }
@@ -168,6 +172,7 @@ public class RestApiClient extends BaseServiceClient {
         rs = init(url, token);
         headers.putAll(mandatoryHeaders);
         nonMandatoryHeaders.put(xSourceBusinessProcessInstanceId, businessProcessInstanceId);
+        nonMandatoryHeaders.put(xSourceRootBusinessProcessInstanceId, businessProcessInstanceId);
         headers.putAll(nonMandatoryHeaders);
         rs = addHeaders(headers);
     }
@@ -197,6 +202,7 @@ public class RestApiClient extends BaseServiceClient {
         isBusinessProcessIdSetted = true;
         return init(url)
                 .header(xAccessToken, token)
+                .header(xSourceRootBusinessProcessInstanceId, businessProcessInstanceId)
                 .header(xSourceBusinessProcessInstanceId, businessProcessInstanceId);
     }
 
@@ -230,6 +236,7 @@ public class RestApiClient extends BaseServiceClient {
     public RestApiClient addBusinessProcessId(String businessProcessId) {
         isBusinessProcessIdSetted = true;
         rs.header(xSourceBusinessProcessInstanceId, businessProcessId);
+        rs.header(xSourceRootBusinessProcessInstanceId, businessProcessId);
         return this;
     }
 
