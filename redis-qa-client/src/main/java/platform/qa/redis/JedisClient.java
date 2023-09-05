@@ -4,6 +4,7 @@ import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,10 @@ public class JedisClient {
     public JedisClient(Redis redis) {
         jedis = new Jedis(URI.create(redis.getUrl()), 10000);
         jedis.auth(redis.getPassword());
+    }
+
+    public JedisClient(List<Redis> redisList) {
+        jedis = getRedisMaster(redisList);
     }
 
     public void set(String key, String value) {
@@ -75,4 +80,23 @@ public class JedisClient {
         jedis.close();
     }
 
+    public static boolean isMaster(Jedis jedis) {
+        String info = jedis.info("Replication");
+        return info.contains("role:master");
+    }
+
+    public Jedis getRedisMaster(List<Redis> redisList) {
+        for (Redis redis : redisList) {
+            Jedis jedis = new Jedis(URI.create(redis.getUrl()), 10000);
+            jedis.auth(redis.getPassword());
+
+            if (isMaster(jedis)) {
+                return jedis;
+            }
+
+            jedis.close();
+        }
+
+        throw new IllegalStateException("Redis master not found");
+    }
 }

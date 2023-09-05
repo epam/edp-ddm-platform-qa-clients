@@ -7,7 +7,7 @@
     <parent>
         <artifactId>platform-qa-clients</artifactId>
         <groupId>platform.qa</groupId>
-        <version>1.6.0.97</version>
+        <version>1.6.0.98</version>
     </parent>
 
     <artifactId>vault-qa-client</artifactId>
