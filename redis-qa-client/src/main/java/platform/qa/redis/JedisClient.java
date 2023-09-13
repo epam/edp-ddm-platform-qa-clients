@@ -1,13 +1,16 @@
 package platform.qa.redis;
 
+import lombok.extern.log4j.Log4j2;
 import platform.qa.entities.Redis;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Log4j2
 public class JedisClient {
     private final Jedis jedis;
 
@@ -87,16 +90,26 @@ public class JedisClient {
 
     public Jedis getRedisMaster(List<Redis> redisList) {
         for (Redis redis : redisList) {
-            Jedis jedis = new Jedis(URI.create(redis.getUrl()), 10000);
-            jedis.auth(redis.getPassword());
+            log.debug("Redis url: " + redis.getUrl());
+            Jedis jedis = new Jedis(URI.create(redis.getUrl()), 30000);
+            boolean isMaster;
 
-            if (isMaster(jedis)) {
+            try {
+                jedis.auth(redis.getPassword());
+                isMaster = isMaster(jedis);
+            } catch (JedisConnectionException e) {
+                log.error("Connection was closed: " + e);
+                jedis.close();
+                continue;
+            }
+
+            if (isMaster) {
                 return jedis;
             }
 
             jedis.close();
         }
 
-        throw new IllegalStateException("Redis master not found");
+        throw new IllegalStateException("Redis master not found or error connecting to Redis");
     }
 }
