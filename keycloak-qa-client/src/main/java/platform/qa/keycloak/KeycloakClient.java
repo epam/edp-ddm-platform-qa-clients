@@ -251,14 +251,11 @@ public class KeycloakClient {
         assignRealmRoleToUser(user, keyCloakUser, realmRolesRep);
     }
 
-    public void removeAssignedUserRealmRole(User user, String role) {
-        var userRoles = getRealmRolesForUser(user.getRealm(), user.getLogin());
-        userRoles.removeIf(x->x.equals(role));
-        user.setRealmRoles(userRoles);
-
+    public void removeAssignedUserRealmRoles(User user, List<String> roles) {
         UserRepresentation keyCloakUser = getKeyCloakUserByName(user.getRealm(), user.getLogin());
-        List<RoleRepresentation> realmRolesRep = getRealmRoleRepresentations(user.getRealm(), user.getRealmRoles());
-        assignRealmRoleToUser(user, keyCloakUser, realmRolesRep);
+
+        List<RoleRepresentation> realmRolesRep = getRealmRoleRepresentations(user.getRealm(), roles);
+        removeRealmRoleFromUser(user, keyCloakUser, realmRolesRep);
     }
 
     private UserRepresentation searchUserByAttributes(String realmName, Map<String, List<String>> attributes) {
@@ -288,6 +285,21 @@ public class KeycloakClient {
                     assertThat(isRoleAssignedForUser(user, keyCloakUser, realmRolesRep))
                             .as("Roles wasn't assigned for user: " + realmRolesRep)
                             .isTrue();
+                });
+    }
+
+    private void removeRealmRoleFromUser(User user, UserRepresentation keyCloakUser,
+                                       List<RoleRepresentation> realmRolesRep) {
+        await("Remove role for user")
+                .pollInterval(1, TimeUnit.SECONDS)
+                .atMost(1, TimeUnit.MINUTES)
+                .ignoreExceptionsInstanceOf(WebApplicationException.class)
+                .untilAsserted(() -> {
+                    keycloak.realm(user.getRealm()).users().get(keyCloakUser.getId()).roles().realmLevel().remove(realmRolesRep);
+
+                    assertThat(isRoleAssignedForUser(user, keyCloakUser, realmRolesRep))
+                            .as("Roles wasn't removed for user: " + realmRolesRep)
+                            .isFalse();
                 });
     }
 
