@@ -251,6 +251,16 @@ public class KeycloakClient {
         assignRealmRoleToUser(user, keyCloakUser, realmRolesRep);
     }
 
+    public void removeAssignedUserRealmRole(User user, String role) {
+        var userRoles = getRealmRolesForUser(user.getRealm(), user.getLogin());
+        userRoles.removeIf(x->x.equals(role));
+        user.setRealmRoles(userRoles);
+
+        UserRepresentation keyCloakUser = getKeyCloakUserByName(user.getRealm(), user.getLogin());
+        List<RoleRepresentation> realmRolesRep = getRealmRoleRepresentations(user.getRealm(), user.getRealmRoles());
+        assignRealmRoleToUser(user, keyCloakUser, realmRolesRep);
+    }
+
     private UserRepresentation searchUserByAttributes(String realmName, Map<String, List<String>> attributes) {
         List<UserRepresentation> userResource = this.keycloak.realm(realmName).users().list();
         return userResource.stream()
